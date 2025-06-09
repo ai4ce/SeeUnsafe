@@ -1,0 +1,76 @@
+############################models#############################
+#annotations
+annotations/
+
+#test and demos
+demo/
+test_demo/
+vehicle_view_test/
+
+# GroundingDINO/
+GroundingDINO/
+
+# inpainter/
+inpainter/
+
+# segment_anything
+segment-anything/
+segment-anything-2/
+sam2/
+
+#LLaVA-NeXT
+LLaVA-NeXT/
+
+#cache
+SeeUnsafe/
+
+# OpenAI API key
+VLM_CaP/
+
+# pth model
+*.pth
+
+# csv files
+*.csv
+
+# text files
+*.txt
+
+# pycache
+__pycache__/
+
+# (maybe) useless python code
+convert_video.py
+index_file_re.py
+jsonformer.py
+load_pkl.py
+mp4_add.py
+norm_pkl.py
+track_anything.py
+track_objects_demo.py
+track_objects_highlight.py
+video_reverse_batch.py
+video_reverse.py
+vlm_eval.py
+vlm_eval1.py
+vlm_rag_eval.py
+vlm_rag.py
+vlm_vehicle_view.py
+vlm_video.py
+
+#README
+README.md
+
+#Yaml file for RAG
+rag.yaml
+
+scenic/
+
+# vlm_eval
+vlm_eval1.py
+vlm_eval2.py
+vlm_eval3.py
+vlm_vehicle_view.py
+
+############################media###############################
+# media/
