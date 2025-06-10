@@ -85,11 +85,11 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
 
 - [ ] **IMS calculation**: Information match score 
 
-- [ ] **Other experimental functionalities**: RAG, key frame selection, trajectory-by-grounding
+- [ ] **Other experimental functionalities**: RAG, key frame selection, trajectory-by-grounding, and maybe even more!
 
 - [ ] **Dataset preparation**: [Toyota Woven Traffic Safety Dataset](https://woven-visionai.github.io/wts-dataset-homepage/)
 
-
+Stay tuned for updates!
 ## Citation
 If you find this work useful for your research, please cite our paper:
 ```
