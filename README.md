@@ -77,17 +77,29 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
    
    `vlm.sh`: A script that can batch process videos by calling `vlm.py`.
 
-## Future To-Do's
-We will gradually open source the following contents.
+## To-Do List
 
--[x] **Main logic**: Accident analysis pipeline using GPT-4o
+- [x] **Main logic**: Accident analysis pipeline using GPT-4o and GPT-4o mini
 
--[ ] **mLLM ablation study**: Accident analysis pipeline using LLaVA
+- [ ] **Pipeline using other models**: LLaVA-NeXT, VideoCLIP
 
--[ ] **Vehicle view analysis**: Accident analysis pipeline for vehicle view videos
+- [ ] **IMS calculation**: Information match score 
 
--[ ] **RAG**: a pipeline integrating RAG methods for better performance
+- [ ] **Other experimental functionalities**: RAG, key frame selection, trajectory-by-grounding
 
--[ ] **Dataset**: dataset of accident videos for statistical purposes
+- [ ] **Dataset preparation**: [Toyota Woven Traffic Safety Dataset](https://woven-visionai.github.io/wts-dataset-homepage/)
 
 
+## Citation
+If you find this work useful for your research, please cite our paper:
+```
+@article{zhang2025language,
+  title={When language and vision meet road safety: leveraging multimodal large language models for video-based traffic accident analysis},
+  author={Zhang, Ruixuan and Wang, Beichen and Zhang, Juexiao and Bian, Zilin and Feng, Chen and Ozbay, Kaan},
+  journal={arXiv preprint arXiv:2501.10604},
+  year={2025}
+}
+```
+
+## Acknowledgments
+The codebase builds upon these wonderful projects [SeeDo](https://github.com/ai4ce/SeeDo), [SAM](https://github.com/facebookresearch/segment-anything), [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO), and [MASA](https://github.com/siyuanliii/masa). Feel free to play around with them!
