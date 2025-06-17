@@ -87,7 +87,7 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
 
 - [ ] **Other experimental functionalities**: RAG, key frame selection, trajectory-by-grounding, and maybe even more!
 
-- [ ] **Dataset preparation**: [Toyota Woven Traffic Safety Dataset](https://woven-visionai.github.io/wts-dataset-homepage/)
+- [x] **Dataset preparation**: [Toyota Woven Traffic Safety Dataset](https://woven-visionai.github.io/wts-dataset-homepage/)
 
 Stay tuned for updates!
 ## Citation
