@@ -35,6 +35,7 @@ VLM_CaP/
 
 # text files
 *.txt
+!requirements.txt
 
 # pycache
 __pycache__/
