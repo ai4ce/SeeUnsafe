@@ -68,7 +68,6 @@ def save_results_to_txt(string_cache, output_file):
     :param output_file: Path to the output text file.
     """
     with open(output_file, mode='a') as file:
-        # 写入数据，仅写入 response
         file.write(string_cache + "\n")
     print(f"Results appended to {output_file}")
 
@@ -76,11 +75,10 @@ def process_images(selected_frames, time_stamps):
     string_cache = ""  # cache for CaP operations
     i = 0
     while i < len(selected_frames):
-        # 取出当前3帧
-        input_frame_pick = selected_frames[i:i+32]
-        input_time_stamps = time_stamps[i:i+32]
+        # Notice that the number of frames for each batch is hard coded here. Feel free to modify.
+        input_frame_pick = selected_frames[i:i+8]
+        input_time_stamps = time_stamps[i:i+8]
         
-        # 对当前3帧进行归零处理，以第一个时间戳为基准
         base_time_stamp = input_time_stamps[0]
         zeroed_time_stamps = [round(ts - base_time_stamp, 1) for ts in input_time_stamps]
 
@@ -111,26 +109,12 @@ def process_images(selected_frames, time_stamps):
                     ],
             },
         ]
-        # prompt_messages_relevance_pick = [
-        #     {
-        #         "role": "user",
-        #         "content": [
-        #             "The following frames contain near-miss or collision traffic incidents. The objects involved in the incident have been labeled with numerical IDs. Please identify the IDs of the involved objects from the video. Specifically, pedestrians are labeled in green, and cars are labeled in red.",
-        #             "Note that there exists and only exixts one pedestrian and car involved. So you should only answer with one ID for pedestrian and one ID for car."
-        #             "Response format example:",
-        #             "Pedestrian ID: 3",
-        #             "Car ID: 5",
-        #             "The images are as follows:",
-        #             *map(lambda x: {"image": x, "resize": 768}, input_frame_pick),
-        #             ],
-        #     },
-        # ]
         response = call_openai_api(prompt_messages_relevance_pick)
         # print(prompt_messages_relevance_pick)
         print(response)
         string_cache += response + "\n"
         print(i)
-        i += 32
+        i += 8
 
     return string_cache
 
@@ -138,17 +122,15 @@ def save_results_to_csv(input_file, string_cache, output_file):
     file_exists = os.path.exists(output_file)
     with open(output_file, mode='a', newline='') as file:
         writer = csv.writer(file)
-        # 如果文件不存在，则写入标题行
         if not file_exists:
             writer.writerow(["demo", "response"])
-        
-        # 写入数据
+
         writer.writerow([f"{input_file}", string_cache])
     print(f"Results appended to {output_file}")
 
 def main(input_video_path, frame_index_list, output_file):
     frame_index_list = ast.literal_eval(frame_index_list)
-    # 基于第一帧计算每个关键帧的时间戳
+    # Calculate the timestamp for each key frame
     base_frame_index = frame_index_list[0]
     time_stamps = [(index - base_frame_index) * 0.1 for index in frame_index_list]
     print(time_stamps)
