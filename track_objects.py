@@ -120,7 +120,7 @@ def extract_num_object(response_state):
     pedestrian_match = re.search(r"Pedestrian: (\d+)", response_state)
     pedestrian_num = int(pedestrian_match.group(1)) if pedestrian_match else 0
 
-    # construct object list, the car and pedestrians are repeated as their number
+    # construct object list
     objects = ["car"] * car_num + ["pedestrian"] * pedestrian_num
 
     return objects
@@ -231,7 +231,7 @@ def video2jpg(video_path, output_folder, sample_freq=1):
         cap.release()
         print(f"All frames have been saved to {output_folder}.")
 
-# might be used for different contour colors of cars and pedestrians
+
 color_list = {
     0: np.array([255, 0, 0]),       # Red
     1: np.array([0, 255, 0]),       # Green
@@ -432,16 +432,14 @@ def main(input_video_path, output_video_path, num_key_frames, bbx_file, index_fi
         print("Object list is empty. Copying original video to output path.")
         shutil.copy(input_video_path, output_video_path)
         key_frame_coordinates = {}
-        # get the number of total frames
         video_capture = cv2.VideoCapture(input_video_path)
         total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
         video_capture.release()
 
-        # uniform sampling num_key_frames frames, and generate keyframe indexes
+        # perform uniform sampling based on num_key_frames
         key_frames = np.linspace(0, total_frames - 1, num=num_key_frames, dtype=int).tolist()
         print(f"Generated key frames: {key_frames}")
 
-        # write file name and keyframe indexes into file index_file
         with open(index_file, mode="a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([input_video_path, key_frames])
@@ -449,7 +447,7 @@ def main(input_video_path, output_video_path, num_key_frames, bbx_file, index_fi
     print(f"Generated prompt: {obj_list}")
 
     # Second Part: Use GroundedSAM2 to track the objects
-    # Parameters for GroundingDINO
+    # Hyper Parameters for GroundingDINO, feel free to modify for better performance
     BOX_TRESHOLD = 0.3
     TEXT_TRESHOLD = 0.25
     object_counts = Counter(obj_list)
@@ -688,23 +686,23 @@ def main(input_video_path, output_video_path, num_key_frames, bbx_file, index_fi
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         for k, mask in video_segments[i].items():
-            obj_prompt = best_phrases[k]  # get the object type, i.e. 'car' or 'pedestrian'
+            obj_prompt = best_phrases[k]
             
-            # set contour color and number for different objects
+            # assign color to different objects
             if obj_prompt == "car":
-                contour_color = 0  # red for car
-                text_color = 0      # car number
+                contour_color = 0  # red
+                text_color = 0 
             elif obj_prompt == "pedestrian":
-                contour_color = 1  # green for pedestrian
-                text_color = 1      # pedestrian number
+                contour_color = 1  # green
+                text_color = 1
             else:
-                contour_color = 2  # default white for debugging
-                text_color = 2     # default white number
+                contour_color = 2  # default white
+                text_color = 2 
 
-            # paint the contour
+            # paint contour
             img = contour_painter(img, mask[0], contour_color=contour_color, ann_obj_id=k)
 
-            # # compute the center for the contour
+            # # calculate center coordinates of the bbx
             # mask_indices = np.argwhere(mask[0] > 0)
             # if len(mask_indices) > 0:
             #     avg_y, avg_x = np.mean(mask_indices, axis=0).astype(int)
