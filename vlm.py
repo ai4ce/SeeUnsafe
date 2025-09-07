@@ -6,7 +6,7 @@ from shapely.geometry import *
 from shapely.affinity import *
 import matplotlib.pyplot as plt
 from openai import OpenAI
-from VLM_CaP.src.key import mykey, projectkey
+from key import mykey, projectkey
 import sys
 from IPython.display import display, Image
 import base64
