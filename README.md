@@ -30,12 +30,34 @@ git clone https://github.com/facebookresearch/segment-anything.git
 git clone https://github.com/facebookresearch/segment-anything-2.git
 ```
 
-Make sure these models are installed in editable packages by `pip install -e .`
+Make sure GroundingDINO and SAM are installed in editable packages by `pip install -e .` Notice that in the the setup of SAM2 will automatically update PyTorch and CUDA. To maintain the required versions for SeeUnsafe, use `pip install -e . --no-deps`
+
+- We have slightly modified the GroundingDINO
+
+In `GroundingDINO/groundingdino/util/inference.py`, we add a function to help inference on an array of images. Please paste the following function into `inference.py`.
+
+```python
+def load_image_from_array(image_array: np.array) -> Tuple[np.array, torch.Tensor]:
+    transform = T.Compose(
+        [
+            T.RandomResize([800], max_size=1333),
+            T.ToTensor(),
+            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ]
+    )
+    image_source = Image.fromarray(image_array)
+    image_transformed, _ = transform(image_source, None)
+    return image_array, image_transformed
+```
 
 - The code still uses one checkpoint from segment-anything.
 
-Make sure you download it in the SeeDo folder.
+Make sure you download it in the SeeUnsafe folder.
 **`default` or `vit_h`: [ViT-H SAM model.](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)**
+
+- The current official checkpoint in segment-anything-2 uses sam2.1, while we are still using sam2.0. Therefore, you need to manually download the sam2.0 checkpoint into the segment-anything-2/checkpoints directory. Please do NOT use the download script in the folder checkpoints!
+**sam2 ckpt: [sam2_hiera_large.pt](https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_large.pt)**
+
 
 - Obtain an OpenAI API key and create a `key.py` file under path SeeUnsafe/
 ```python
@@ -43,7 +65,7 @@ touch key.py
 echo 'projectkey="YOUR_OPENAI_API_KEY"' > key.py
 ```
 
-## Pipeline
+## Main Logic Pipeline
 
 There are two critical parts of SeeUnsafe, *frame-wise information augmentation* part and *task-specific mLLM evaluation* part.
 
@@ -58,7 +80,9 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
    
    `--num_key_frames`: number of keyframes for normal sampling (int)
    
-   `--bbx_file`: file to store the center coordinates of the detected objects in keyframes (csv)
+   `--bbx_file`: file to store the center coordinates of the detected objects in keyframes (csv).
+
+   This bbx storage is intended for further study and is not actually used in SeeUnsafe. Feel free to delete this input as needed.
    
    `--index_file`: file to store the indexes for keyframes (csv)
 
@@ -77,11 +101,30 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
    
    `vlm.sh`: A script that can batch process videos by calling `vlm.py`.
 
+## LLaVA-NeXT Pipeline
+The only difference between the llava-next pipeline and the main logic pipeline is that the Task-Specific mLLM Evaluation uses a different mLLM model to evaluate the results. We will use LLaVA-NeXT as an example to illustrate how this pipeline works.
+
+- Download LLaVA-NeXT
+
+```python
+git clone https://github.com/LLaVA-VL/LLaVA-NeXT.git
+```
+Follow its README to set up the environment.
+
+- Navigate to the following path:
+
+SeeUnsafe/LLaVA-NeXT/scripts/video/demo
+
+- Copy `video_batch_demo_llava.sh` in SeeUnsafe to this path.
+
+We have provided a sample script for batch processing videos. Feel free to modify it as needed.
+
+
 ## To-Do List
 
 - [x] **Main logic**: Accident analysis pipeline using GPT-4o and GPT-4o mini
 
-- [ ] **Pipeline using other models**: LLaVA-NeXT, VideoCLIP
+- [x] **Pipeline using other models**: LLaVA-NeXT, VideoCLIP
 
 - [ ] **IMS calculation**: Information match score 
 
