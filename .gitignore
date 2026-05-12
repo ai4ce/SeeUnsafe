@@ -59,9 +59,6 @@ vlm_rag.py
 vlm_vehicle_view.py
 vlm_video.py
 
-#README
-README.md
-
 #Yaml file for RAG
 rag.yaml
 

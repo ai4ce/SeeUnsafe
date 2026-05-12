@@ -10,7 +10,7 @@ SeeUnsafe relies on several open-source projects, including: GroundingDINO, SAM,
 
 - Install SeeUnsafe and create a new environment
 
-```python
+```bash
 git clone https://github.com/ai4ce/SeeUnsafe
 conda create --name SeeUnsafe python=3.10
 conda activate SeeUnsafe
@@ -19,18 +19,18 @@ pip install -r requirements.txt
 ```
 
 - Install PyTorch
-```python
+```bash
 pip install torch==2.3.1+cu118 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
 - Install GroundingDINO, SAM, SAM2 in the same environment
-```python
+```bash
 git clone https://github.com/IDEA-Research/GroundingDINO
 git clone https://github.com/facebookresearch/segment-anything.git
 git clone https://github.com/facebookresearch/segment-anything-2.git
 ```
 
-Make sure GroundingDINO and SAM are installed in editable packages by `pip install -e .` Notice that in the the setup of SAM2 will automatically update PyTorch and CUDA. To maintain the required versions for SeeUnsafe, use `pip install -e . --no-deps`
+Make sure GroundingDINO and SAM are installed in editable packages by `pip install -e .` Notice that the setup of SAM2 will automatically update PyTorch and CUDA. To maintain the required versions for SeeUnsafe, use `pip install -e . --no-deps`.
 
 - We have slightly modified the GroundingDINO
 
@@ -52,7 +52,7 @@ def load_image_from_array(image_array: np.array) -> Tuple[np.array, torch.Tensor
 
 - The code still uses one checkpoint from segment-anything.
 
-Make sure you download it in the SeeUnsafe folder.
+Make sure you download it into the SeeUnsafe folder.
 **`default` or `vit_h`: [ViT-H SAM model.](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)**
 
 - The current official checkpoint in segment-anything-2 uses sam2.1, while we are still using sam2.0. Therefore, you need to manually download the sam2.0 checkpoint into the segment-anything-2/checkpoints directory. Please do NOT use the download script in the folder checkpoints!
@@ -60,10 +60,14 @@ Make sure you download it in the SeeUnsafe folder.
 
 
 - Obtain an OpenAI API key and create a `key.py` file under path SeeUnsafe/
-```python
+```bash
 touch key.py
 echo 'projectkey="YOUR_OPENAI_API_KEY"' > key.py
 ```
+
+## Data
+
+We use the [Toyota Woven Traffic Safety (WTS) dataset](https://woven-visionai.github.io/wts-dataset-homepage/) for our experiments. The selected camera IDs and video class labels for the train/val splits are provided under [`labels/`](labels/README.md) — see that directory's README for the file format, field descriptions, and notes on `normal_trimmed` videos.
 
 ## Main Logic Pipeline
 
@@ -86,7 +90,7 @@ There are two critical parts of SeeUnsafe, *frame-wise information augmentation*
    
    `--index_file`: file to store the indexes for keyframes (csv)
 
-3. **Task-Specific mLLM Evaluation**
+2. **Task-Specific mLLM Evaluation**
    This part takes the visually augmented video and key frame indices obtained from the frame-wise information augmentation stage, segments the enhanced video into multiple key clips, and calls the multimodal large language model (mLLM) to analyze the severity of the accident in each clip.
    
    `vlm.py`: calls openai api (gpt-4o default)
@@ -106,7 +110,7 @@ The only difference between the llava-next pipeline and the main logic pipeline 
 
 - Download LLaVA-NeXT
 
-```python
+```bash
 git clone https://github.com/LLaVA-VL/LLaVA-NeXT.git
 ```
 Follow its README to set up the environment.
@@ -132,6 +136,8 @@ We have provided a sample script for batch processing videos. Feel free to modif
 
 - [x] **Dataset preparation**: [Toyota Woven Traffic Safety Dataset](https://woven-visionai.github.io/wts-dataset-homepage/)
 
+- [x] **Train/Val camera id and video class label**
+
 Stay tuned for updates!
 ## Citation
 If you find this work useful for your research, please cite our paper:
@@ -139,8 +145,11 @@ If you find this work useful for your research, please cite our paper:
 @article{zhang2025language,
   title={When language and vision meet road safety: leveraging multimodal large language models for video-based traffic accident analysis},
   author={Zhang, Ruixuan and Wang, Beichen and Zhang, Juexiao and Bian, Zilin and Feng, Chen and Ozbay, Kaan},
-  journal={arXiv preprint arXiv:2501.10604},
-  year={2025}
+  journal={Accident Analysis \& Prevention},
+  volume={219},
+  pages={108077},
+  year={2025},
+  publisher={Elsevier}
 }
 ```
 
